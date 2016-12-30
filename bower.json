@@ -1,0 +1,33 @@
+{
+  "name": "mdl-ssn-textfield",
+  "version": "1.0.0",
+  "homepage": "https://github.com/rathxxx/mdl-ssn-textfield",
+  "authors": [
+    "Russell Tarpley <russell.tarpley@gmail.com>"
+  ],
+  "description": "mdl-ssn-textfield for material-design-lite",
+  "main": [
+    "dist/mdl-ssn-textfield.min.css",
+    "dist/mdl-ssn-textfield.min.js"
+  ],
+  "keywords": [
+    "material",
+    "design",
+    "styleguide",
+    "style",
+    "guide",
+    "mdl",
+    "ssn"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "material-design-lite": "~1.2.1"
+  }
+}
