@@ -11,7 +11,7 @@
      */
     var MaterialSSNTextfield = function MaterialSSNTextfield(element) {
         this.element_ = element;
-        this.maxRows = this.Constant_.NO_MAX_ROWS;
+        this.rawValue = "";
         // Initialize instance.
         this.init();
     };
@@ -23,10 +23,7 @@
      * @enum {string | number}
      * @private
      */
-    MaterialSSNTextfield.prototype.Constant_ = {
-        NO_MAX_ROWS: -1,
-        MAX_ROWS_ATTRIBUTE: 'maxrows'
-    };
+    MaterialSSNTextfield.prototype.Constant_ = {};
 
     /**
      * Store strings for class names defined by this component that are used in
@@ -44,7 +41,7 @@
         IS_DISABLED: 'is-disabled',
         IS_INVALID: 'is-invalid',
         IS_UPGRADED: 'is-upgraded',
-        HAS_PLACEHOLDER: 'has-placeholder'
+        MASKED: 'mdl-ssn-textfield--masked'
     };
 
     /**
@@ -68,18 +65,21 @@
     };
 
     MaterialSSNTextfield.prototype.onChange_ = function (event) {
-        //var pattern = /^(\d{1,2})\/?-?(\d{1,2})\/?-?(\d{4})/;
-        ////Test the input string for basic format (optional '/' '-')
-        //if (!pattern.test(this.input_.value)) {
-        //    this.element_.classList.add(this.CssClasses_.IS_INVALID);
-        //    return false;
-        //}
-        
-        //if good
-        //set value
-        //else this.element_.classList.add(this.CssClasses_.IS_INVALID);
-        //
-
+        var pattern = /^(\d{3})-?(\d{2})-?(\d{4})$/;
+        //Test the input string for basic format (optional '-')
+        if (!pattern.test(this.input_.value)) {
+            this.element_.classList.add(this.CssClasses_.IS_INVALID);
+            return false;
+        } else {
+            var matches = pattern.exec(this.input_.value);
+            this.rawValue = matches[1] + "-" + matches[2] + "-" + matches[3];
+            //Determine which visual format to use
+            if (this.element_.className.indexOf(this.CssClasses_.MASKED) !== -1) {
+                this.input_.value = "***-" + "**-" + matches[3];
+            } else {
+                this.input_.value = this.rawValue;
+            }
+        }
     };
 
     /**
@@ -120,6 +120,16 @@
     };
     MaterialSSNTextfield.prototype['checkDisabled'] =
         MaterialSSNTextfield.prototype.checkDisabled;
+
+    /**
+     * Retrieve the raw value of the field
+     * @returns {string} unmasked value
+     */
+    MaterialSSNTextfield.prototype.getValue = function () {
+        return this.rawValue;
+    };
+    MaterialSSNTextfield.prototype['getValue'] =
+        MaterialSSNTextfield.prototype.getValue;
 
     /**
     * Check the focus state and update field accordingly.
@@ -213,19 +223,6 @@
             this.input_ = this.element_.querySelector('.' + this.CssClasses_.INPUT);
 
             if (this.input_) {
-                if (this.input_.hasAttribute(
-                    /** @type {string} */(this.Constant_.MAX_ROWS_ATTRIBUTE))) {
-                    this.maxRows = parseInt(this.input_.getAttribute(
-                        /** @type {string} */(this.Constant_.MAX_ROWS_ATTRIBUTE)), 10);
-                    if (isNaN(this.maxRows)) {
-                        this.maxRows = this.Constant_.NO_MAX_ROWS;
-                    }
-                }
-
-                if (this.input_.hasAttribute('placeholder')) {
-                    this.element_.classList.add(this.CssClasses_.HAS_PLACEHOLDER);
-                }
-
                 this.boundUpdateClassesHandler = this.updateClasses_.bind(this);
                 this.boundFocusHandler = this.onFocus_.bind(this);
                 this.boundBlurHandler = this.onBlur_.bind(this);

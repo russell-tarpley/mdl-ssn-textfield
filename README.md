@@ -84,6 +84,15 @@ SSN field with a standard label, and error message.
 <div class="mdl-ssn-textfield mdl-js-ssn-textfield">
         <input class="mdl-ssn-textfield__input" type="text" id="sample4">
         <label class="mdl-ssn-textfield__label" for="sample4">SSN Example...</label>
-		<span class="mdl-ssn-textfield__error">MM/DD/YYYY</span>
+		<span class="mdl-ssn-textfield__error">999-99-9999</span>
+</div>
+```
+
+SSN field with masked input.
+```html
+<div class="mdl-ssn-textfield mdl-js-ssn-textfield mdl-ssn-textfield--masked">
+        <input class="mdl-ssn-textfield__input" type="text" id="sample4">
+        <label class="mdl-ssn-textfield__label" for="sample4">SSN Example...</label>
+		<span class="mdl-ssn-textfield__error">999-99-9999</span>
 </div>
 ```
