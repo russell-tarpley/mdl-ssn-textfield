@@ -244,6 +244,9 @@
                     this.element_.focus();
                     this.checkFocus();
                 }
+                if (this.input_.value.length > 0) {
+                    this.onChange_();
+                }
             }
         }
     };
