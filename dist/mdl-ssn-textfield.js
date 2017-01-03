@@ -72,12 +72,12 @@
             return false;
         } else {
             var matches = pattern.exec(this.input_.value);
-            this.rawValue = matches[1] + "-" + matches[2] + "-" + matches[3];
+            this.rawValue = matches[1] + matches[2] + matches[3];
             //Determine which visual format to use
             if (this.element_.className.indexOf(this.CssClasses_.MASKED) !== -1) {
                 this.input_.value = "***-" + "**-" + matches[3];
             } else {
-                this.input_.value = this.rawValue;
+                this.input_.value = matches[1] + "-" + matches[2] + "-" + matches[3];
             }
         }
     };
