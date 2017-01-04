@@ -23,7 +23,10 @@
      * @enum {string | number}
      * @private
      */
-    MaterialSSNTextfield.prototype.Constant_ = {};
+    MaterialSSNTextfield.prototype.Constant_ = {
+        Pattern: /^((\d{3})\u0020?-?\u0020?(\d{2})\u0020?-?\u0020?(\d{4}))?$/,
+        MaskedPattern: /^\u2022\u2006\u2022\u2006\u2022\u0020-\u0020\u2022\u2006\u2022\u0020-\u0020(\d{4})$/
+    };
 
     /**
      * Store strings for class names defined by this component that are used in
@@ -51,7 +54,7 @@
      * @private
      */
     MaterialSSNTextfield.prototype.onFocus_ = function (event) {
-        this.element_.classList.add(this.CssClasses_.IS_FOCUSED);
+        this.element_.classList.add(this.CssClasses_.IS_FOCUSED);       
     };
 
     /**
@@ -61,25 +64,18 @@
      * @private
      */
     MaterialSSNTextfield.prototype.onBlur_ = function (event) {
-        this.element_.classList.remove(this.CssClasses_.IS_FOCUSED);
-    };
-
-    MaterialSSNTextfield.prototype.onChange_ = function (event) {
-        var pattern = /^(\d{3})-?(\d{2})-?(\d{4})$/;
-        //Test the input string for basic format (optional '-')
-        if (!pattern.test(this.input_.value)) {
-            this.element_.classList.add(this.CssClasses_.IS_INVALID);
-            return false;
-        } else {
-            var matches = pattern.exec(this.input_.value);
-            this.rawValue = matches[1] + matches[2] + matches[3];
+        this.updateClasses_();
+        if (this.element_.classList.contains(this.CssClasses_.IS_DIRTY) && !this.element_.classList.contains(this.CssClasses_.IS_INVALID) && !this.Constant_.MaskedPattern.test(this.input_.value)) {
+            var matches = this.Constant_.Pattern.exec(this.input_.value);
+            this.rawValue = matches[2] + matches[3] + matches[4];
             //Determine which visual format to use
-            if (this.element_.className.indexOf(this.CssClasses_.MASKED) !== -1) {
-                this.input_.value = "***-" + "**-" + matches[3];
+            if (this.element_.classList.contains(this.CssClasses_.MASKED)) {
+                this.input_.value = "\u2022\u2006\u2022\u2006\u2022 - " + "\u2022\u2006\u2022 - " + matches[4];
             } else {
-                this.input_.value = matches[1] + "-" + matches[2] + "-" + matches[3];
+                this.input_.value = matches[2] + " - " + matches[3] + " - " + matches[4];
             }
         }
+        this.element_.classList.remove(this.CssClasses_.IS_FOCUSED);
     };
 
     /**
@@ -153,7 +149,7 @@
      */
     MaterialSSNTextfield.prototype.checkValidity = function () {
         if (this.input_.validity) {
-            if (this.input_.validity.valid) {
+            if (this.input_.validity.valid && (this.Constant_.Pattern.test(this.input_.value) || this.Constant_.MaskedPattern.test(this.input_.value))) {
                 this.element_.classList.remove(this.CssClasses_.IS_INVALID);
             } else {
                 this.element_.classList.add(this.CssClasses_.IS_INVALID);
@@ -227,12 +223,10 @@
                 this.boundFocusHandler = this.onFocus_.bind(this);
                 this.boundBlurHandler = this.onBlur_.bind(this);
                 this.boundResetHandler = this.onReset_.bind(this);
-                this.boundChangeHandler = this.onChange_.bind(this);
                 this.input_.addEventListener('input', this.boundUpdateClassesHandler);
                 this.input_.addEventListener('focus', this.boundFocusHandler);
                 this.input_.addEventListener('blur', this.boundBlurHandler);
                 this.input_.addEventListener('reset', this.boundResetHandler);
-                this.input_.addEventListener('change', this.boundChangeHandler);
 
                 var invalid = this.element_.classList.contains(this.CssClasses_.IS_INVALID);
                 this.updateClasses_();
@@ -244,8 +238,8 @@
                     this.element_.focus();
                     this.checkFocus();
                 }
-                if (this.input_.value.length > 0) {
-                    this.onChange_();
+                if (this.element_.className.indexOf(this.CssClasses_.IS_DIRTY) !== -1) {
+                    this.onBlur_();
                 }
             }
         }
