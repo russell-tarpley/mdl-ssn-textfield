@@ -54,6 +54,11 @@
      * @private
      */
     MaterialSSNTextfield.prototype.onFocus_ = function (event) {
+        if (this.element_.classList.contains(this.CssClasses_.MASKED) && this.Constant_.MaskedPattern.test(this.input_.value)) {
+            //Unmask the field while focused
+            var matches = this.Constant_.Pattern.exec(this.rawValue);
+            this.input_.value = matches[2] + " - " + matches[3] + " - " + matches[4];
+        }
         this.element_.classList.add(this.CssClasses_.IS_FOCUSED);       
     };
 
